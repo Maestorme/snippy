@@ -1,0 +1,112 @@
+
+<h1>{{title}} for Snippy</h1>
+
+<form action='/submit' method = 'post'>
+	<input id='check-again' name='check' readonly>
+	<p>{{msg}}</p>
+	<div class='input'>
+		<label for='email'>E-mail</label>
+		<input type='email' id='email' name='email' onblur='clickAway(2)' value='{{email}}'>
+		<p id='email-available'></p>
+	</div>
+	<div class='input'>
+		<label for='username'>Username</label>
+		<input type='text' id='username' name='username' onblur='clickAway(1)' value='{{user}}'>
+		<p id='username-available'></p>
+	</div>
+	<div class='input'>
+		<label for='username'>Password</label>
+		<input type='password' id='password' name='password' onblur='clickAway2()'>
+		<p id='password-available'></p>
+	</div>
+	<div class='input'>
+		<label for='username'>Confirm Password</label>
+		<input type='password' id='confirmPassword' name='confirmPassword' onblur='clickAway2()'>
+		<p id='confirmPassword-available'></p>
+	</div>
+	<div class="g-recaptcha" data-sitekey="6Ld30SYUAAAAAIbuuVXcGWuMs-39zUJwu4WU0yP_"></div>
+	<button type="submit">Sign-Up</button>
+</form>
+
+
+<script>
+var errors = new Array(4);
+function clickAway(type){
+
+	if(type == 1)
+		var val = 'u'+document.getElementById('username').value;
+	else if(type == 2)
+		var val = 'e'+document.getElementById('email').value;
+
+	var myRequest = new XMLHttpRequest();
+	myRequest.onreadystatechange = function(){
+	  	
+ 		if (myRequest.readyState == 4 && myRequest.status == 200) {
+            
+            if(type == 1){
+	            if(myRequest.responseText == 'taken'){
+	            	document.getElementById('username-available').innerHTML = "The username is taken!";
+	            	errors[1] = 1;
+	            }
+	            else if(myRequest.responseText == 'available'){
+	            	document.getElementById('username-available').innerHTML = "The username is available!";
+	            	errors[1] = 0;
+	            }
+	            else if(myRequest.responseText == 'special'){
+	            	document.getElementById('username-available').innerHTML = "The username has special characters / is empty!"
+	            	errors[1] = 1;;
+	            }
+	            if(val == 'u'){
+	            	document.getElementById('username-available').innerHTML = " ";
+	            	errors[1] = 0;
+	            }
+	        }
+
+	        else if(type == 2){
+	        	if(myRequest.responseText == 'taken'){
+	            	document.getElementById('email-available').innerHTML = "The email is used!";
+	            	errors[0] = 1;
+	            }
+	            else if(myRequest.responseText == 'available'){
+	            	document.getElementById('email-available').innerHTML = "The email is available!";
+	            	errors[0] = 0;
+	            }
+	            if(val == 'e'){
+	            	document.getElementById('email-available').innerHTML = " ";
+	            	errors[0] = 1;
+	            }
+	        }
+
+	        document.getElementById('check-again').value = errors.join();
+        }   
+	}
+	myRequest.open('POST', '/availability', true);
+	myRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	myRequest.send(val);
+}
+
+function clickAway2(){
+	var pw = document.getElementById('password').value;
+	var cpw = document.getElementById('confirmPassword').value;
+
+	if(pw.length < 6){
+		document.getElementById('password-available').innerHTML = "Password is less than 6 characters!";
+		errors[2] = 1;
+	}
+	else{
+		document.getElementById('password-available').innerHTML = " ";
+		errors[2] = 0;
+	}
+	if(pw != cpw){
+		document.getElementById('confirmPassword-available').innerHTML = "The passwords don't match!";
+		errors[3] = 1;
+	}
+	else{
+		document.getElementById('confirmPassword-available').innerHTML = " ";
+		errors[3] = 0;
+	}
+
+	document.getElementById('check-again').value = errors.join();
+}
+
+</script>

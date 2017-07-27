@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:100|Roboto:100');
+
+body {
+  
+  padding: 50px;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  background-image: url('../images/bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+a {
+  color: #00B7FF;
+  text-decoration: none;
+}
+
+.input{
+	height: 5rem;
+	background-color: rgba(0,0,255, 0.1);
+	border: 1px solid black;
+	padding-top: 3rem;
+	padding-left: 1rem;
+	margin: 1rem;
+	margin-left: 0;
+  transition: all 0.5s ease;
+}
+
+.red{
+  background-color: rgba(255,0,0,0.5);
+}
+.green{
+  background-color: rgba(0,255,0,0.5);
+}
+
+.shake{
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97);
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.input label{
+	font-weight: 600;
+	font-size: 1rem;
+}
+#check-again{
+	height: 2rem;
+	opacity: 0;
+	display: hidden;
+}
+
+.link{
+  border-bottom: 0.03rem solid;
+  font-weight: 600;
+  transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+
+}
+
+.link:hover{
+  color: #007eff;
+}
+
+.privacy{
+  width: 8rem;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.anonimity{
+  width: 12rem;
+  background-color: white;
+  border: 1px solid black;
+}

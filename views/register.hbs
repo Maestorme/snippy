@@ -1,0 +1,188 @@
+
+<h1>Register for Snippy</h1>
+
+<form action = '/signup' method='post'>
+	<p id="captcha-message">{{msg}}</p>
+	<div id = "emaildiv" class='input empty'>
+		<label for='email'>E-mail</label>
+		<input type='email' id='email' name='email' onblur='clickAway("email")' value='{{email}}'>
+		<p id='email-available'></p>
+	</div>
+	<div id = "usernamediv" class='input empty'>
+		<label for='username'>Username</label>
+		<input type='text' id='username' name='username' onblur='clickAway("username")' value='{{user}}'>
+		<p id='username-available'></p>
+	</div>
+	<div id = "pdiv" class='input empty'>
+		<label for='paswword'>Password</label>
+		<input type='password' id='password' name='password' onblur='clickAway2(1)'>
+		<p id='password-available'></p>
+	</div>
+	<div id = "cpdiv" class='input empty'>
+		<label for='confirmPassword'>Confirm Password</label>
+		<input type='password' id='confirmPassword' name='confirmPassword' onblur='clickAway2(2)'>
+		<p id='confirmPassword-available'></p>
+	</div>
+	<div class="g-recaptcha" data-sitekey="6Ld30SYUAAAAAIbuuVXcGWuMs-39zUJwu4WU0yP_"></div>
+	<br>
+	<button type = 'submit' id='submitButton'>Sign-Up</button>
+</form>
+<a href='/' class='link'>Back</a>
+
+<script>
+
+function clickAway(type){
+	var checking = $('#'+type).val();
+	if(type == 'email')
+		var valid = ValidateEmail(checking);
+
+	if(valid || type == 'username' || checking.length == 0){
+		if(checking.length > 0){
+			$.ajax({
+		        type: 'POST',
+		        url: 'check',
+		        data: {"data": checking, "type": type},
+		        //dataType: 'json',
+		        success: function (data, status) {
+		            if(data == 'used'){
+		            	$('#'+type+'-available').html("The "+type+" you entered is not available.");
+		            	$('#'+type+'div').addClass('red').removeClass('green').removeClass('empty');
+		            }
+		            else{
+		            	$('#'+type+'-available').html("The "+type+" you entered is available.");
+		            	$('#'+type+'div').addClass('green').removeClass('red').removeClass('empty');
+		            }
+
+
+		        },
+
+		    });
+		}
+		else{
+			$('#'+type+'div').addClass('empty').removeClass('red').removeClass('green');
+			$('#'+type+'-available').html(" ");
+		}
+	}
+	else{
+		$('#'+type+'-available').html("The "+type+" you entered is not of the right format, i.e. example@mydomain.com");
+		$('#'+type+'div').addClass('red').removeClass('green').removeClass('empty');
+	}
+}
+
+function clickAway2(type){
+	if(type == 1){
+		if($("#password").val().length < 6 && $("#password").val().length > 0){
+			$('#password-available').html("The password you entered is less than 6 characters.");
+			$('#pdiv').addClass('red').removeClass('green').removeClass('empty');
+		}
+		else if($("#password").val().length == 0){
+			$('#password-available').html("Please enter a password.");
+			$('#pdiv').addClass('empty').removeClass('green').removeClass('red');
+		}
+		else{
+			$('#password-available').html(" ");
+			$('#pdiv').addClass('green').removeClass('red').removeClass('empty');
+		}
+	}
+	else{
+		if($('#password').val().length == 0){
+			$('#confirmPassword-available').html("Please enter a password first.");
+			$('#cpdiv').addClass('empty').removeClass('green').removeClass('red');
+		}
+		else if($("#confirmPassword").val().length == 0){
+			$('#confirmPassword-available').html("Please confirm the password.");
+			$('#cpdiv').addClass('empty').removeClass('green').removeClass('red');
+		}
+		else if($("#password").val() != $("#confirmPassword").val()){
+			$('#confirmPassword-available').html("The passwords don't match.");
+			$('#cpdiv').addClass('red').removeClass('green').removeClass('empty');
+		}
+		
+		else{
+			$('#confirmPassword-available').html(" ");
+			$('#cpdiv').addClass('green').removeClass('red').removeClass('empty');
+		}
+	}
+
+}
+
+
+$('#submitButton').on('click', function(e){
+	e.preventDefault(); //Preventing the page from refreshing
+	
+	
+
+
+
+
+	var email = $("#email").val();
+	var username = $("#username").val();
+	var password = $("#password").val();
+	var confirmPassword = $("#confirmPassword").val();
+
+	//Calling all the check functions
+	clickAway('email');
+	clickAway('username');
+
+	
+	/*$.post('check', {"data": email, "type": "email"});
+	$.post('check', {"data": username, "type": "username"});*/
+	clickAway2(1);
+	clickAway2(2);
+
+	console.log("finished checking");
+	if($(".input").hasClass('red') || $(".input").hasClass('empty')){
+
+		$(".red").removeClass('shake');
+		$(".empty").removeClass('shake');
+
+		setTimeout(function() {
+	        $(".empty").addClass('shake');
+	        $(".red").addClass('shake');
+	    }, 1);
+		console.log("done shaking");
+	}
+	else{
+		
+		$.post(
+			'signup',
+			{"email": email, "username": username, "password": password, "captcha": grecaptcha.getResponse}
+			)
+			.done(function(data, status){
+				console.log(data);
+				if(data == '/'){
+					$(location).attr('href', data);
+				}
+				else if(data == '/newuser'){
+					$('#captcha-message').html("CAPTCHA Verification Failed");
+					$('#password').val("");
+					$('#confirmPassword').val("");
+				}
+
+			})
+		
+		/*$.ajax({
+		        type: 'POST',
+		        url: 'signup',
+		        data: {"email": email, "username": username, "password": password, "captcha": grecaptcha.getResponse()},
+		        //dataType: 'json',
+		        success: function (data, status) {
+		          console.log('details sent to server')
+		        }
+
+		 });*/
+	}
+
+	console.log("clicked");
+});
+
+
+function ValidateEmail(mail)   
+{  
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))  
+  {  
+    return (true)  
+  }  
+}  
+
+</script>

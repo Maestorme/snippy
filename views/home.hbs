@@ -1,0 +1,78 @@
+<h1>Dear <span style="border-bottom: 1px solid black">{{user}}</span>, welcome {{title}}</h1>
+<a href = '/logout'>Logout</a>
+<h2>Create a new snippet</h2>
+
+<form action='/save' method='post'>
+	<input id='sniptitle' placeholder="Snippet Title" name = 'sniptitle'><br>
+	<textarea id="snippet" rows = '20' cols = '180' placeholder="Type in your code!" name='snippet'>{{fileupload}}</textarea><br>
+
+  <div class = "privacy">
+  	<input type="radio" name="privacy" value = 'private'>Private<br>
+  	<input type='radio' name="privacy" value = 'public' checked>Public
+  </div>
+  <br><br>
+
+  <div class = "anonimity">
+  	<input type="radio" name="anonimity" value='true' checked>Show username<br>
+  	<input type="radio" name="anonimity" value='false'>Be anonymous
+  </div>
+  <br>
+
+  <label>Syntax</label>
+	<select name='language'>
+		  <option value="">Plain Text</option>
+ 		  <option value="apache">Apache</option>
+  		<option value="bash">Bash</option>
+  		<option value="csharp">C#</option>
+  		<option value="cpp">C++</option>
+  		<option value="css">CSS</option>
+  		<option value="coffeescript">CoffeeScript</option>
+  		<option value="diff">Diff</option>
+  		<option value="html">HTML / XML</option>
+  		<option value="http">HTTP</option>
+  		<option value="ini">Ini</option>
+  		<option value="json">JSON</option>
+  		<option value="java">Java</option>
+  		<option value="javascript">JavaScript</option>
+  		<option value="makefile">Makefile</option>
+  		<option value="markdown">Markdown</option>
+  		<option value="nginx">Nginx</option>
+  		<option value="objc">Objective-C</option>
+  		<option value="php">PHP</option>
+  		<option value="perl">Perl</option>
+  		<option value="python">Python</option>
+  		<option value="ruby">Ruby</option>
+  		<option value="sql">SQL</option>
+  		<option value="ps">Shell Session</option>
+	</select><br>
+
+  <label>Expiration</label>
+  <select name='expiration'>
+      <option value='-10000'>Never</option>
+      <option value='10000'>10 seconds</option>
+      <option value='600000'>10 minutes</option>
+      <option value='3600000'>1 hour</option>
+      <option value='86400000'>1 day</option>
+      <option value='604800000'>1 week</option>
+      <option value='1210000000'>2 weeks</option>
+      <option value='2628000000'>1 month</option>
+  </select><br><br>
+
+	<button type="submit">Save Snippet</button>
+</form>
+<h2>Or upload a file</h2>
+<form action='/upload' method='post' enctype="multipart/form-data">
+	<input type='file' name='filetoupload'><br>
+	<button type='submit'>Upload</button>
+</form>
+
+<h2>Snippets made by user</h2>
+{{#if snips}}
+	<ul>
+	    {{#each snips}}
+	    	<li>{{this.title}} - /{{this.code}} - {{this.privacy}}</li>
+	    {{/each}}
+	</ul>
+{{else}}
+	<p>No snippets made yet</p>
+{{/if}}

@@ -1,0 +1,12 @@
+{{#if display}}
+	<h1>Snippet: {{ item.title }}</h1>
+	{{#if anon}}
+		<h2>By: {{item.author}}</h2>
+	{{/if}}
+	<pre><code class='{{item.language}}'>{{ item.content }}</code></pre>
+{{else}}
+	<h1>Snippet is made private by user</h1>
+{{/if}}
+
+
+
